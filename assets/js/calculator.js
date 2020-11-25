@@ -3,12 +3,8 @@ export class Calculator {
         this.numbers = numbers;
     }
 
-    sum() {
-        let sum = 0;
-        for(let value of this.numbers) {
-            sum += value;
-        }
-        return sum;
+    sum(number1, number2) {
+        return number1 + number2;
     }
 
 }
