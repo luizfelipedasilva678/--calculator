@@ -2,6 +2,7 @@ import {Calculator} from './calculator.js';
 
 (function (){
     let input = document.getElementById('expression');
+    let calculator;
     let expression = []; 
 
     function deleteDisplay() {
@@ -23,8 +24,20 @@ import {Calculator} from './calculator.js';
     }
 
     function result() {
-        let ex = input.value.split('+');
+        let ex = input.value.split(/\+|\-|\*|\//);
         console.log(ex)
+        let v = typeTransform(ex);
+        let result = new Calculator(v);
+        input.value = result.share();
+
+    }
+
+    function typeTransform(strings) {
+        let numbers = [];
+        strings.forEach(function(value) {
+            numbers.push(Number(value));
+        })
+        return numbers;
     }
     
     document.addEventListener('click', function (e) {
