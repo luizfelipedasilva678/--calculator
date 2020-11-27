@@ -19,25 +19,77 @@ import {Calculator} from './calculator.js';
         input.value = '';
     }
 
+    function clearArray(array) {
+        while(array.length) {
+            array.pop();
+        }
+    }
+
+    function removeElementsOfArray(array, quantity) {
+        for (var i = 0; i < quantity; i++) {
+            array.shift();
+        }
+    }
+
+    function execCalc (calculator,signal, number1, number2) {
+        let res;
+        if(signal === '+') {
+            res = input.value = calculator.sum(number1, number2);
+        } else if(signal === '-') {
+            res = input.value = calculator.subtract(number1, number2);
+        } else if(signal === '*') {
+            res = input.value = calculator.multiply(number1, number2);
+        } else if(signal === '/') {
+            res = input.value = calculator.share(number1, number2);
+        }
+        return res;
+    }
+
     function createExpression(e) {
         expression.push(e.target.innerHTML)
         input.value = expression.join('');
     }
 
+    function allTheSameOrDifferent(array) {
+        var filtered = array.filter(function(elem, index, arr) {
+            return arr.indexOf(elem) == index;
+        });
+        return filtered.length === 1 ? true : false;
+    }
+
     function result() {
         let ex = input.value.split(/\+|\-|\*|\//);
-        console.log(ex)
         let v = typeTransform(ex);
-        let result = new Calculator(v);
+        let result = new Calculator();
         
-        if(signal === '+') {
-            input.value = result.sum();
-        } else if(signal === '-') {
-            input.value = result.subtract();
-        } else if(signal === '*') {
-            input.value = result.multiply();
-        } else if(signal === '/') {
-            input.value = result.share();
+        if( allTheSameOrDifferent(signals) ) {
+            if(signal === '+') {
+                input.value = result.sum(...v);
+                clearArray(signals);
+            } else if(signal === '-') {
+                input.value = result.subtract(...v);
+                clearArray(signals);
+            } else if(signal === '*') {
+                input.value = result.multiply(...v);
+                clearArray(signals);
+            } else if(signal === '/') {
+                input.value = result.share(...v);
+                clearArray(signals);
+            }
+        } else {
+            let res = execCalc(result,signals[0], v[0], v[1]);
+            removeElementsOfArray(v, 2);
+            removeElementsOfArray(signals, 1);
+            while(signals.length > 0) {
+                signals.forEach(function(value) {
+                    if(v.length > 0) {
+                        res = execCalc(result,value, res, v[0]);
+                        removeElementsOfArray(v,1);
+                        removeElementsOfArray(signals,1);
+                    }                
+                })
+            }
+            input.value = res;
         }
     }
 
@@ -67,8 +119,6 @@ import {Calculator} from './calculator.js';
             if (target.innerHTML === '-' || target.innerHTML === '+' || target.innerHTML === '/' || target.innerHTML === '*') {
                 signal = target.innerHTML;
                 signals.push(target.innerHTML);
-                console.log(signal);
-                console.log(signals);
             }
         }
     })
