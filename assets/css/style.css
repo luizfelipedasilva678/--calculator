@@ -28,7 +28,8 @@ main {
 .container {
     position: relative;
     width: 70vw;
-    margin: 50px auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
     display: flex;
     align-items: center;
     justify-content: center;

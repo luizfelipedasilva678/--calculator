@@ -2,7 +2,8 @@ import {Calculator} from './calculator.js';
 
 (function (){
     let input = document.getElementById('expression');
-    let calculator;
+    let signal;
+    let signals = [];
     let expression = []; 
 
     function deleteDisplay() {
@@ -28,8 +29,16 @@ import {Calculator} from './calculator.js';
         console.log(ex)
         let v = typeTransform(ex);
         let result = new Calculator(v);
-        input.value = result.share();
-
+        
+        if(signal === '+') {
+            input.value = result.sum();
+        } else if(signal === '-') {
+            input.value = result.subtract();
+        } else if(signal === '*') {
+            input.value = result.multiply();
+        } else if(signal === '/') {
+            input.value = result.share();
+        }
     }
 
     function typeTransform(strings) {
@@ -41,17 +50,26 @@ import {Calculator} from './calculator.js';
     }
     
     document.addEventListener('click', function (e) {
+        let target = e.target;
 
-        if(e.target.className === 'rectangle') {
-            if(e.target.innerHTML === '=') {
+        if(target.className === 'rectangle') {
+    
+            if(target.innerHTML === '=') {
                 result();
-            } else if (e.target.innerHTML === '«') {
+            } else if (target.innerHTML === '«') {
                 deleteDisplay();
-            } else if(e.target.innerHTML === 'C') {
+            } else if(target.innerHTML === 'C') {
                 clearDisplay();
             } else {
                 createExpression(e)
-            }                    
+            }  
+            
+            if (target.innerHTML === '-' || target.innerHTML === '+' || target.innerHTML === '/' || target.innerHTML === '*') {
+                signal = target.innerHTML;
+                signals.push(target.innerHTML);
+                console.log(signal);
+                console.log(signals);
+            }
         }
     })
 })();
