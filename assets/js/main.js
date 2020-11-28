@@ -25,6 +25,17 @@ import {Calculator} from './calculator.js';
         }
     }
 
+    function orderArrayOfSignals (array) {
+        let newArray = array;
+        newArray.forEach(function (elem, index) {
+            if(elem === '*' || elem === '/') {
+                newArray.splice(index, 1);  
+                newArray.splice(0, 0, elem);
+            }
+        }) 
+        return newArray;
+    }
+
     function removeElementsOfArray(array, quantity) {
         for (var i = 0; i < quantity; i++) {
             array.shift();
@@ -77,18 +88,38 @@ import {Calculator} from './calculator.js';
                 clearArray(signals);
             }
         } else {
-            let res = execCalc(result,signals[0], v[0], v[1]);
-            removeElementsOfArray(v, 2);
-            removeElementsOfArray(signals, 1);
-            while(signals.length > 0) {
-                signals.forEach(function(value) {
-                    if(v.length > 0) {
+            let res; 
+
+            if(signals[0] !== '/' || signals[0] !== '*') {
+                let newSignals = [];
+                newSignals = orderArrayOfSignals(signals);
+                res = execCalc(result,newSignals[0], v[1], v[v.length - 1]);
+                
+                removeElementsOfArray(newSignals, 1);
+                while(newSignals.length > 0) {
+                    newSignals.forEach(function(value) {
                         res = execCalc(result,value, res, v[0]);
                         removeElementsOfArray(v,1);
-                        removeElementsOfArray(signals,1);
-                    }                
-                })
+                        removeElementsOfArray(newSignals,1);
+                    })
+                }
+
+            } else {
+                
+                res = execCalc(result,signals[0], v[0], v[1]);
+                removeElementsOfArray(v, 2);
+                removeElementsOfArray(signals, 1);
+                while(signals.length > 0) {
+                    signals.forEach(function(value) {
+                        if(v.length > 0) {
+                            res = execCalc(result,value, res, v[0]);
+                            removeElementsOfArray(v,1);
+                            removeElementsOfArray(signals,1);
+                        }                
+                    })
+                }
             }
+
             input.value = res;
         }
     }
