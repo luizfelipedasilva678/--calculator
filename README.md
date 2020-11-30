@@ -1,4 +1,6 @@
 # calculator
 Simple calculator made with JavaScript, Html and Css
 <hr>
-Development...
+<img src="project-imgs/desk.png">
+<img src="project-imgs/mob.png">
+
