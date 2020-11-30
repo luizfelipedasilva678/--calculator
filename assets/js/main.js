@@ -1,9 +1,5 @@
-import {Calculator} from './calculator.js';
-
 (function (){
     let input = document.getElementById('expression');
-    let signal;
-    let signals = [];
     let expression = []; 
 
     function deleteDisplay() {
@@ -19,65 +15,26 @@ import {Calculator} from './calculator.js';
         input.value = '';
     }
 
-    function clearArray(array) {
-        while(array.length) {
-            array.pop();
-        }
-    }
-
     function createExpression(e) {
         expression.push(e.target.innerHTML)
         input.value = expression.join('');
     }
 
-    function allTheSameOrDifferent(array) {
-        var filtered = array.filter(function(elem, index, arr) {
-            return arr.indexOf(elem) == index;
-        });
-        return filtered.length === 1 ? true : false;
+    function equals(value) {
+        return value === '0' || value === '1' || value === '2' || value === '2' || value === '3' || value === '4' || value === '5' 
+        || value === '6' || value === '7' || value === '8' || value === '9' || value === '+' 
+        || value === '-' || value === '*' || value === '/' || value === '(' ||value === ')'
     }
 
     function result() {
-        let ex = input.value.split(/\+|\-|\*|\//);
-        let v = typeTransform(ex);
-        let result = new Calculator();
+        let arrayExpression = input.value.split("");
+        let filtredExpression = arrayExpression.filter(equals).join("");   
+        let result = eval(filtredExpression);
         
-        if( allTheSameOrDifferent(signals) ) {
-            if(signal === '+') {
-                input.value = result.sum(...v);
-                clearArray(signals);
-            } else if(signal === '-') {
-                input.value = result.subtract(...v);
-                clearArray(signals);
-            } else if(signal === '*') {
-                input.value = result.multiply(...v);
-                clearArray(signals);
-            } else if(signal === '/') {
-                input.value = result.share(...v);
-                clearArray(signals);
-            }
+        if(isNaN(result)) {
+            alert("The answer is NaN");
         } else {
-           let firstNumber = expression.split("");
-           console.log(firstNumber);
-           let regexWithTwoOperators = /(-)?([0-9])+(\+|\-)(-)?([0-9])+(\*|\/)(-)?([0-9])+/;
-           
-            if(input.value.match(regexWithTwoOperators)) {
-                if(signals[0] === '+' && signals[1] === '*') {
-                    input.value = v[0] + (v[1] * v[2]);
-                    clearArray(signals);
-                } else if(signals[0] === '+' && signals[1] === '/') {
-                    input.value = v[0] + v[1] / v[2];
-                    clearArray(signals);
-                } else if(signals[0] === '-' && signals[1] === '*') {
-                    input.value = v[0] - v[1] * v[2];
-                    clearArray(signals);
-                } else if(signals[0] === '-' && signals[1] === '/') {
-                    input.value = v[0] - v[1] / v[2];
-                    clearArray(signals);
-                }
-            }
-
-            clearArray(signals);
+            input.value = result;
         }
     }
 
@@ -102,25 +59,8 @@ import {Calculator} from './calculator.js';
                 clearDisplay();
             } else {
                 createExpression(e)
-            }  
-            
-            if (target.innerHTML === '-' || target.innerHTML === '+' || target.innerHTML === '/' || target.innerHTML === '*') {
-                signal = target.innerHTML;
-                signals.push(target.innerHTML);
-            }
+            }     
         }
     })
 })();
 
-/*
-function orderArrayOfSignals (array) {
-    let newArray = array;
-    newArray.forEach(function (elem, index) {
-        if(elem === '*' || elem === '/') {
-            newArray.splice(index, 1);  
-            newArray.splice(0, 0, elem);
-        }
-    }) 
-    return newArray;
-}
-*/
